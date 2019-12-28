@@ -13,5 +13,6 @@ namespace Sample
         public string Action { get; set; }
         public DateTime ActionTime { get; set; }
         public string Description { get; set; }
+        public Int32 UserId { get; set; }
     }
 }

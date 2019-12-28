@@ -41,6 +41,7 @@
             this.btnDeleteUser = new System.Windows.Forms.Button();
             this.btnEditUser = new System.Windows.Forms.Button();
             this.pnlInputData = new System.Windows.Forms.Panel();
+            this.lblUserId = new System.Windows.Forms.Label();
             this.lblEditPassword = new System.Windows.Forms.Label();
             this.btnCancelUser = new System.Windows.Forms.Button();
             this.txtEditUsername = new System.Windows.Forms.TextBox();
@@ -57,7 +58,6 @@
             this.btnClearUserList = new System.Windows.Forms.Button();
             this.btnRefreshUserList = new System.Windows.Forms.Button();
             this.grdUserList = new System.Windows.Forms.DataGridView();
-            this.lblUserId = new System.Windows.Forms.Label();
             this.GrpLogin.SuspendLayout();
             this.pnlHistory.SuspendLayout();
             this.pnlUserPanel.SuspendLayout();
@@ -208,6 +208,15 @@
             this.pnlInputData.Size = new System.Drawing.Size(296, 110);
             this.pnlInputData.TabIndex = 23;
             // 
+            // lblUserId
+            // 
+            this.lblUserId.AutoSize = true;
+            this.lblUserId.Location = new System.Drawing.Point(224, 13);
+            this.lblUserId.Name = "lblUserId";
+            this.lblUserId.Size = new System.Drawing.Size(38, 13);
+            this.lblUserId.TabIndex = 23;
+            this.lblUserId.Text = "UserId";
+            // 
             // lblEditPassword
             // 
             this.lblEditPassword.AutoSize = true;
@@ -344,15 +353,7 @@
             this.grdUserList.Name = "grdUserList";
             this.grdUserList.Size = new System.Drawing.Size(562, 234);
             this.grdUserList.TabIndex = 0;
-            // 
-            // lblUserId
-            // 
-            this.lblUserId.AutoSize = true;
-            this.lblUserId.Location = new System.Drawing.Point(224, 13);
-            this.lblUserId.Name = "lblUserId";
-            this.lblUserId.Size = new System.Drawing.Size(38, 13);
-            this.lblUserId.TabIndex = 23;
-            this.lblUserId.Text = "UserId";
+            this.grdUserList.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grdUserList_CellDoubleClick);
             // 
             // Form1
             // 

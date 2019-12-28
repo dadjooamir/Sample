@@ -32,7 +32,7 @@ namespace Sample
             }
             lblUserId.Text="";
             txtEditUsername.Text = "";
-            txtLoginPassword.Text = "";
+            txtEditPassword.Text = "";
             txtEditMobile.Text = "";
             txtEditName.Text = "";
             txtEditEmail.Text = "";
@@ -40,21 +40,25 @@ namespace Sample
 
         private void btnEnter_Click(object sender, EventArgs e)
         {
-            if (txtLoginUsername.Text == txtLoginPassword.Text)
+            using(Context cnx = new Context())
             {
-                
-                History Rec = new History();
-                Rec.Action = "Login";
-                Rec.ActionTime = DateTime.Now;
-                Rec.Description = txtLoginUsername.Text;
-                Context db = new Context();
-                db.Histories.Add(Rec);
-                db.SaveChanges();
-                pnlHistory.Visible = false;
-                pnlUserPanel.Visible = true;
-                GrpLogin.Visible = false;
-                RefreshUserList();
+                if (cnx.Users.Where(z => z.UserName == txtLoginUsername.Text & z.Password == txtLoginPassword.Text).Any())
+                {
+
+                    History Rec = new History();
+                    Rec.Action = "Login";
+                    Rec.ActionTime = DateTime.Now;
+                    Rec.Description = txtLoginUsername.Text;
+                    Context db = new Context();
+                    db.Histories.Add(Rec);
+                    db.SaveChanges();
+                    pnlHistory.Visible = false;
+                    pnlUserPanel.Visible = true;
+                    GrpLogin.Visible = false;
+                    RefreshUserList();
+                }
             }
+            
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -100,7 +104,7 @@ namespace Sample
                     {
                         User NewUser = new User();
                         NewUser.UserName = txtEditUsername.Text;
-                        NewUser.Password = txtLoginPassword.Text;
+                        NewUser.Password = txtEditPassword.Text;
                         NewUser.Mobile = txtEditMobile.Text;
                         NewUser.Name = txtEditName.Text;
                         NewUser.Email = txtEditEmail.Text;
@@ -111,9 +115,10 @@ namespace Sample
                 case "Update":
                     using (Context cnx = new Context())
                     {
-                        User NewUser = cnx.Users.Where(x => x.Id == Convert.ToInt32(lblUserId.Text)).First();
+                        int Index = Convert.ToInt32(lblUserId.Text);
+                        User NewUser = cnx.Users.Where(x => x.Id == Index).First();
                         NewUser.UserName = txtEditUsername.Text;
-                        NewUser.Password = txtLoginPassword.Text;
+                        NewUser.Password = txtEditPassword.Text;
                         NewUser.Mobile = txtEditMobile.Text;
                         NewUser.Name = txtEditName.Text;
                         NewUser.Email = txtEditEmail.Text;
@@ -141,9 +146,10 @@ namespace Sample
             {
                 if(cnx.Users.Any())
                 {
-                    User UpdateUser = cnx.Users.Where(x => x.Id == Convert.ToInt32(grdUserList.CurrentRow.Cells["Id"].Value)).First();
+                    int Index = Convert.ToInt32(grdUserList.CurrentRow.Cells["Id"].Value);
+                    User UpdateUser = cnx.Users.Where(x => x.Id == Index).First();
                     txtEditUsername.Text = UpdateUser.UserName;
-                    txtLoginPassword.Text = UpdateUser.Password;
+                    txtEditPassword.Text = UpdateUser.Password;
                     txtEditMobile.Text = UpdateUser.Mobile;
                     txtEditName.Text = UpdateUser.Name;
                     txtEditEmail.Text= UpdateUser.Email;
@@ -158,7 +164,8 @@ namespace Sample
             {
                 if (cnx.Users.Any())
                 {
-                    User UpdateUser = cnx.Users.Where(x => x.Id == 2).First();
+                    int Index = Convert.ToInt32(grdUserList.CurrentRow.Cells["Id"].Value);
+                    User UpdateUser = cnx.Users.Where(x => x.Id == Index).First();
                     DialogResult Res = MessageBox.Show(UpdateUser.UserName + "\n" +
                     UpdateUser.Password + "\n" +
                     UpdateUser.Mobile + "\n" +
@@ -169,7 +176,6 @@ namespace Sample
                     {
                         cnx.Users.Remove(UpdateUser);
                         cnx.SaveChanges();
-
                     }
                 }
             }
@@ -181,6 +187,30 @@ namespace Sample
             ActionFlag = "";
             pnlInputData.Enabled = false;
             RefreshUserList();
+        }
+
+        private void grdUserList_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            string Log = "";
+            using (Context cnx = new Context())
+            {
+                int Index = Convert.ToInt32(2);
+                var Rep = cnx.Users.Join(cnx.Histories,
+                            U => U.Id,
+                            H => H.UserId,
+                            (U, H) => new
+                            {
+                                UserId = U.Id,
+                                Action = H.Action,
+                                Date = H.ActionTime
+                            }).Where(x => x.UserId == Index);
+                
+                foreach(var item in Rep)
+                {
+                    Log += item.Action + "-" + item.Date + "\n";
+                }
+            }
+            MessageBox.Show(Log);
         }
     }
 }
